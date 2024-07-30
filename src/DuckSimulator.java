@@ -1,5 +1,6 @@
 import interfaces.Quackable;
 import adapters.*;
+import decorators.*;
 import ducks.*;
 public class DuckSimulator {
     public static void main(String[] args) {
@@ -8,11 +9,11 @@ public class DuckSimulator {
     }
 
     void simulate() {
-        Quackable mallardDuck = new MallardDuck();
-        Quackable redheadDuck = new RedheadDuck();
-        Quackable duckCall = new DuckCall();
-        Quackable rubberDuck = new RubberDuck();
-        Quackable gooseDuck = new GooseAdapter(new Goose());
+        Quackable mallardDuck = new QuackCounter(new MallardDuck());
+        Quackable redheadDuck = new QuackCounter(new RedheadDuck());
+        Quackable duckCall = new PoliteQuack(new DuckCall());
+        Quackable rubberDuck = new QuackCounter(new RubberDuck());
+        Quackable gooseDuck = new PoliteQuack(new GooseAdapter(new Goose()));
         Quackable pigeon = new PigeonAdapter(new Pigeon());
         
         System.out.println("\nDuck Simulator: With Goose Adapter");
@@ -24,6 +25,8 @@ public class DuckSimulator {
         simulate(gooseDuck);
         simulate(pigeon);
         
+
+        System.out.println("The ducks quacked " + QuackCounter.getQuacks() + " times");
     }
     
     public static void simulate(Quackable duck) {
