@@ -1,36 +1,43 @@
 import interfaces.Quackable;
-import abstracts.AbstractDuckFactory;
-import abstracts.CountingDuckFactory;
-import adapters.*;
+import abstracts.*;
 import decorators.*;
-import ducks.*;
+
+
 
 public class DuckSimulator {
-    public static void main(String[] args) {
-        DuckSimulator simulator = new DuckSimulator();
-        AbstractDuckFactory duckFactory = new CountingDuckFactory();
-
-        simulator.simulate(duckFactory);
+    private AbstractDuckFactory factory;
+    public DuckSimulator(AbstractDuckFactory factory) {
+       this.factory = factory;
     }
 
-    void simulate(AbstractDuckFactory duckFactory) {
-        Quackable mallardDuck = duckFactory.createMallardDuck();
-        Quackable redheadDuck = duckFactory.createRedHeadDuck();
-        Quackable duckCall = duckFactory.createDuckCall();
-        Quackable rubberDuck = duckFactory.createRubberDuck();
-        Quackable gooseDuck = new PoliteQuack(new GooseAdapter(new Goose()));
-        Quackable pigeon = new PigeonAdapter(new Pigeon());
+    public static void main(String[] args) {
+        AbstractDuckFactory factory = new PoliteWithCountDuckFactory();
+
+        DuckSimulator simulator = new DuckSimulator(factory);
+        simulator.simulate();
         
-        System.out.println("\nDuck Simulator: With Abstract Factory");
+    }
+
+
+    public void simulate() {
+        Flock flockOfMallards = new Flock();
+        flockOfMallards.add(factory.createMallardDuck());
+        flockOfMallards.add(factory.createMallardDuck());
+        flockOfMallards.add(factory.createMallardDuck());
+
+        System.out.println("\nFlock of Mallard Ducks");
+        simulate(flockOfMallards);
+
+        Flock flockOfRedHeads = new Flock();
+        flockOfRedHeads.add(factory.createRedHeadDuck());
+        flockOfRedHeads.add(factory.createRedHeadDuck());
+        flockOfRedHeads.add(factory.createRedHeadDuck());
+
+        System.out.println("\nFlock of Red Head Ducks");
+        simulate(flockOfRedHeads);
+
+        System.out.println("Polite duck quacked: " + QuackCounter.getQuacks() + " times");
         
-        simulate(mallardDuck);
-        simulate(redheadDuck);
-        simulate(duckCall);
-        simulate(rubberDuck);
-        simulate(gooseDuck);
-        simulate(pigeon);
-        
-        System.out.println("The ducks quacked " + QuackCounter.getQuacks() + " times");
     }
     
     void simulate(Quackable duck) {
